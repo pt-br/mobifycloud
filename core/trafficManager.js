@@ -2,7 +2,6 @@ const cheerio = require('cheerio');
 const proxy = require('express-http-proxy');
 const mobify = require('../app/main.js');
 
-
 /* Global variables */
 hostOrigin = '';
 hostPath = '';

@@ -3,8 +3,7 @@
   "routes": {
     "developmentPrefix": "mlocal",
     "siteDomain": [
-      "casadaconstrucao.net",
-      "pampaburger.com.br"
+      "casadaconstrucao.net"
     ]
   }
 }
