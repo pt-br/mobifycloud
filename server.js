@@ -69,7 +69,7 @@ function updateHostFile() {
 
     originalHosts = hostsContent;
 
-    newHostsContent = hostsContent + '\n# MOBILEON HOSTS:';
+    newHostsContent = hostsContent + '\n# MobifyCloud Development Hosts:';
     //newHostsContent = newHostsContent + '\n' + '127.0.0.1' + '\t' + routeHost;
     for( var i = 0; i < routesHost.length; i++ ) {
       newHostsContent = newHostsContent + '\n' + '127.0.0.1' + '\t' + routesHost[i];
@@ -103,7 +103,7 @@ function compileJS() {
   // Parse entry point
   var content = parseInclude(entryPoint);
   // write the parsed/replaced content into a single file
-  fs.writeFileSync("./app/assets/javascript/bundle/mobileon.js", content);
+  fs.writeFileSync("./app/assets/javascript/bundle/monifycloud.js", content);
 
   /**
    *  Replaces all @include("file") declarations with file content
@@ -143,7 +143,7 @@ function compileJS() {
     //
     return  prefix + "\n" + content + "\n" + sufix;
   }
-  console.log("JS assets compiled into -> app/assets/javascript/mobileon.js");
+  console.log("JS assets compiled into -> app/assets/javascript/mobifycloud.js");
 }
 
 function generateSpriteSheet() {
@@ -330,4 +330,3 @@ httpServer.listen(httpPort, function() {
   compileJS();
   console.log('Access your project on: ' + routesHost[0]);
 });
-//httpsServer.listen(8443);

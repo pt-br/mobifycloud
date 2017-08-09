@@ -1,10 +1,11 @@
 {
-  "name": "Mobileon",
+  "name": "mobifycloud",
   "version": "1.0.0",
-  "description": "Mobileon Framework",
+  "description": "MobifyClod Framework",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "sudo node server.js",
+    "dev": "sudo nodemon server.js"
   },
   "dependencies": {
     "cheerio": "^0.19.0",
@@ -21,12 +22,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pt-br/mobileon.git"
+    "url": "git+https://github.com/pt-br/mobifycloud.git"
   },
   "author": "@pt-br",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pt-br/mobileon/issues"
+    "url": "https://github.com/pt-br/mobifycloud/issues"
   },
-  "homepage": "http://mobileon.com.br"
+  "homepage": "http://mobifycloud.com"
 }
