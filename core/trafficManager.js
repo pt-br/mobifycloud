@@ -2,6 +2,8 @@ const cheerio = require('cheerio');
 const proxy = require('express-http-proxy');
 const mobify = require('../app/main.js');
 
+
+/* Global variables */
 hostOrigin = '';
 hostPath = '';
 hostVar = '';
@@ -111,7 +113,7 @@ const trafficManager = {
       /* Verify if Production */
       else if (hostOrigin.match(/(m\.|mobile\.)/g)) { //m.konsole.studio / mobile.konsole.studio
         environment = 'production';
-        if ( hostOrigin.match(/m\./g) ) {
+        if (hostOrigin.match(/m\./g)) {
           hostVar = 'm.';
         } else {
           hostVar = 'mobile.';
