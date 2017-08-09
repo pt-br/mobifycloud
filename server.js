@@ -15,6 +15,7 @@ const trafficManager = require('./core/trafficManager');
 hostCleaner(hostUtils.cleanupHosts); // Watch for server changes and hosts restoring
 const siteDomains = hostUtils.getSiteDomains();
 const developmentDomain = hostUtils.getDevelopmentDomain();
+const developmentPrefix = hostUtils.getDevelopmentPrefix();
 
 app.use(sassMiddleware({
   /* Options */
@@ -32,7 +33,7 @@ app.use('/fonts', express.static(`${__dirname}/app/assets/fonts`));
 app.use('/scripts', express.static(`${__dirname}/app/assets/javascript/bundle`));
 app.use(express.static(path.join(__dirname, '/app/assets/stylesheets/css')));
 
-trafficManager.proxify(app, siteDomains);
+trafficManager.proxify(app, siteDomains, developmentPrefix);
 
 const httpServer = http.createServer(app);
 const httpPort = process.env.PORT || 80;

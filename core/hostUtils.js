@@ -54,6 +54,10 @@ const hostUtils = {
     const firstDomain = siteConfig.routes.siteDomain[0];
     return `${developmentPrefix}.${firstDomain}`;
   },
+
+  getDevelopmentPrefix: () => {
+    return developmentPrefix;
+  },
 }
 
 module.exports = hostUtils;

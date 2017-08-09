@@ -67,7 +67,7 @@ const proxyOptions = {
 }
 
 const trafficManager = {
-  proxify: (app, siteDomains) => {
+  proxify: (app, siteDomains, developmentPrefix) => {
     app.use((req, res, next) => {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -76,14 +76,16 @@ const trafficManager = {
         res.sendStatus(200);
       }
 
+      const devPrefixRegex = new RegExp(`${developmentPrefix}\.`, 'g');
+
       /* Proxy Router */
       hostOrigin = req.headers['host'];
 
       /* Verify if Development */
-      if (hostOrigin.match(/mlocal/g)) { //mlocal.konsole.studio
+      if (hostOrigin.match(devPrefixRegex)) { //mlocal.konsole.studio
         environment = 'development';
-        hostVar = 'mlocal.';
-        hostOrigin = hostOrigin.replace(/\mlocal\./g, ''); //konsole.studio
+        hostVar = `${devPrefixRegex}.`;
+        hostOrigin = hostOrigin.replace(devPrefixRegex, ''); //konsole.studio
       }
       /* Verify if Heroku*/
       else if (hostOrigin.match(/herokuapp/g)) { //appft-konsole-studio.herokuapp.com
