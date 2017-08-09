@@ -20,7 +20,7 @@ function mobify(callback, data, mappingUrl, contentType, environment) {
 
   if (!isPerfectProxy) {
 
-    /* Remove or keep script files */
+    /* Keep necessary JS files */
     keepJS();
 
     /* Core functions execution */
