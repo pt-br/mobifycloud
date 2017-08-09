@@ -1,4 +1,6 @@
-module.exports = function(mappingUrl) {
+const router = require('./router');
+
+module.exports = mappingUrl => {
   pageTypes = [];
 
  /* Map URLs here */
@@ -21,5 +23,5 @@ module.exports = function(mappingUrl) {
   );
 
   /* Router will import a file according to mapping */
-  require('./router')(pageTypes, mappingUrl, 'mapping');
+  router(pageTypes, mappingUrl, 'mapping');
 };

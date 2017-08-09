@@ -1,6 +1,12 @@
-const perfectProxy = require('./scripts/perfectProxy.js');
+const coreFunctions = require('./scripts/coreFunctions.js');
+const customFunctions = require('./scripts/customFunctions.js');
 const keepJS = require('./scripts/keepJS.js');
-const coreFunctions = require('./scripts/coreFunctions.js')
+const mapping = require('./scripts/mapping.js')
+const perfectProxy = require('./scripts/perfectProxy.js');
+
+/* Site specific */
+const header = require('./scripts/sections/header.js');
+const footer = require('./scripts/sections/footer.js')
 
 function mobify(callback, data, mappingUrl, contentType, environment) {
 
@@ -17,10 +23,6 @@ function mobify(callback, data, mappingUrl, contentType, environment) {
     /* Remove or keep script files */
     keepJS();
 
-    /* Import core/custom functions */
-    // require('./scripts/core_functions.js');
-    require('./scripts/custom_functions.js');
-
     /* Core functions execution */
     coreFunctions.removeAllStyles();
     coreFunctions.removeJS();
@@ -33,29 +35,27 @@ function mobify(callback, data, mappingUrl, contentType, environment) {
     coreFunctions.insertMainStyle();
 
     /* Custom functions execution */
-    includeFacebookAPI();
+    customFunctions.includeFacebookAPI();
 
-    /* Import common sections */
-    require('./scripts/sections/header.js')();
-    require('./scripts/sections/footer.js')();
+    /* Init common sections */
+    header.init();
+    footer.init();
 
-    /* Import mappings */
-    require('./scripts/mapping.js')(mappingUrl);
+    /* Exec mappings */
+    mapping(mappingUrl);
 
-    hideCarouselIfNotHome();
+    customFunctions.hideCarouselIfNotHome();
 
     /* Output final content */
-    finalHtml = $('html').toString();
+    const finalHtml = $('html').toString();
     callback(null, finalHtml);
   } else {
     /* Perfect proxy page */
 
-    /* Import core functions */
-    require('./scripts/core_functions.js');
+    /* Core functions execution */
+    coreFunctions.rewriteLinks();
 
-    rewriteLinks();
-
-    finalHtml = $('html').toString();
+    const finalHtml = $('html').toString();
     callback(null, finalHtml);
   }
 };
