@@ -2,6 +2,11 @@ const cheerio = require('cheerio');
 const proxy = require('express-http-proxy');
 const mobify = require('../app/main.js');
 
+hostOrigin = '';
+hostPath = '';
+hostVar = '';
+environment = '';
+
 const proxyOptions = {
   preIntercept: res => {
     // If we must preIntercept something
@@ -62,7 +67,7 @@ const proxyOptions = {
 }
 
 const trafficManager = {
-  proxify: (app, routesEndpoint) => {
+  proxify: (app, siteDomains) => {
     app.use((req, res, next) => {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -112,9 +117,9 @@ const trafficManager = {
         hostOrigin = hostOrigin.replace(/(\m\.|mobile\.)/g, ''); //konsole.studio
       }
 
-      for (let i = 0; i < routesEndpoint.length; i++) {
+      for (let i = 0; i < siteDomains.length; i++) {
         let hostOriginRegExp = new RegExp('^' + hostOrigin, 'gi');
-        let currentEndpoint = routesEndpoint[i];
+        let currentEndpoint = siteDomains[i];
         // console.log('CURRENT HOST ORIGIN: ' + hostOrigin);
         // console.log('CURRENT MATCHING ENDPOINT:' + currentEndpoint);
         if (currentEndpoint.match(hostOriginRegExp)) { // konsole.studio == konsole.studio

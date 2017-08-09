@@ -13,9 +13,8 @@ const trafficManager = require('./core/trafficManager');
 
 /* Hosts section */
 hostCleaner(hostUtils.cleanupHosts); // Watch for server changes and hosts restoring
-hostUtils.getRoutes();
-const routesEndpoint = hostUtils.getRoutesEndpoint();
-const routeHost = hostUtils.getRoutesHost();
+const siteDomains = hostUtils.getSiteDomains();
+const developmentDomain = hostUtils.getDevelopmentDomain();
 
 app.use(sassMiddleware({
   /* Options */
@@ -33,7 +32,7 @@ app.use('/fonts', express.static(`${__dirname}/app/assets/fonts`));
 app.use('/scripts', express.static(`${__dirname}/app/assets/javascript/bundle`));
 app.use(express.static(path.join(__dirname, '/app/assets/stylesheets/css')));
 
-trafficManager.proxify(app, routesEndpoint);
+trafficManager.proxify(app, siteDomains);
 
 const httpServer = http.createServer(app);
 const httpPort = process.env.PORT || 80;
@@ -41,5 +40,5 @@ httpServer.listen(httpPort, function() {
   generateSpriteSheet();
   hostUtils.updateHostFile();
   jsCompiler();
-  console.log(`Access your project on: ${routeHost}`);
+  console.log(`Access your project on: ${developmentDomain}`);
 });

@@ -1,0 +1,10 @@
+{
+  "client": "Casa da Construção",
+  "routes": {
+    "developmentPrefix": "mlocal",
+    "siteDomain": [
+      "casadaconstrucao.net",
+      "pampaburger.com.br"
+    ]
+  }
+}

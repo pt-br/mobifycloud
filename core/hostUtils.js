@@ -1,19 +1,13 @@
 const fs = require('fs');
 const domain = require('domain');
-const url_map = require('../url_map.json');
+const siteConfig = require('../siteConfig.json');
 
 const d = domain.create();
 /* Site Route */
-let routes = [];
-let routesEndpoint = [];
-let routesHost = [];
-
+let siteDomains = [];
+let developmentDomain = [];
 let originalHosts = '';
-
-let hostOrigin = '';
-let hostPath = '';
-let hostVar = '';
-let environment = '';
+const { developmentPrefix } = siteConfig.routes;
 
 d.on('error', err => {
   console.error(err);
@@ -28,10 +22,10 @@ const hostUtils = {
 
       originalHosts = hostsContent;
 
-      let newHostsContent = `${hostsContent} # MobifyCloud Development Hosts:`;
-      for (let i = 0; i < routesHost.length; i++) {
-        newHostsContent = newHostsContent + '\n' + '127.0.0.1' + '\t' + routesHost[i];
-      }
+      let newHostsContent = '\n'+ hostsContent + '\n# MobifyCloud Development Hosts:';
+      siteDomains.map((domain) => {
+        newHostsContent = newHostsContent + '\n' + '127.0.0.1' + '\t' + `${developmentPrefix}.${domain}`;
+      });
 
       /* Verify if writeFile is successful to avoid Heroku issues */
       d.run(() => {
@@ -42,11 +36,13 @@ const hostUtils = {
     });
   },
 
-  getRoutes: () => {
-    let urlRoutesLength = JSON.stringify(url_map.route.length);
-    for (let i = 0; i < urlRoutesLength; i++) {
-      routes.push(JSON.stringify(url_map.route[i]));
-    }
+  getSiteDomains: () => {
+    const domains = siteConfig.routes.siteDomain;
+    domains.map((domain) => {
+      siteDomains.push(domain);
+    });
+
+    return siteDomains;
   },
 
   cleanupHosts: () => {
@@ -54,18 +50,9 @@ const hostUtils = {
     fs.writeFileSync('/etc/hosts', originalHosts);
   },
 
-  getRoutesEndpoint: () => {
-    for (let i = 0; i < routes.length; i++) {
-      routesEndpoint.push(routes[i].split('=> ')[1].replace('\"', ''));
-      return routesEndpoint;
-    }
-  },
-
-  getRoutesHost: () => {
-    for (let i = 0; i < routes.length; i++) {
-      routesHost.push(routes[i].split('=> ')[0].replace('\"', ''));
-      return routesHost[0];
-    }
+  getDevelopmentDomain: () => {
+    const firstDomain = siteConfig.routes.siteDomain[0];
+    return `${developmentPrefix}.${firstDomain}`;
   },
 }
 
