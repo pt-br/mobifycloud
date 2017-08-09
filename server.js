@@ -5,74 +5,16 @@ const sassMiddleware = require('node-sass-middleware');
 const http = require('follow-redirects').http;
 const https = require('follow-redirects').https;
 const proxy = require('express-http-proxy');
-
-const fs = require('fs');
 const path = require('path');
 
-const generateSpriteSheet = require('./core/generateSpriteSheet');
 const hostUtils = require('./core/hostUtils');
 const hostCleaner = require('./core/hostCleaner').clean(hostUtils.cleanupHosts);
+const generateSpriteSheet = require('./core/generateSpriteSheet');
+const jsCompiler = require('./jsCompiler');
 
 hostUtils.getRoutes();
 const routesEndpoint = hostUtils.getRoutesEndpoint();
 const routeHost = hostUtils.getRoutesHost();
-
- /**
-  * Thanks to @williammustaffa for this compiler.
-  * Original src: https://github.com/williammustaffa/jGame.js/blob/master/compile.js
-  *
-  */
-function compileJS() {
-  // Project src
-  var srcDir = "./app/assets/javascript/"
-  var entryPoint = srcDir + "main.js";
-  // regex to serach @include("file"); declarations
-  var searchRegex = /include\(\"[^\)]*\"\)/;
-  // Parse entry point
-  var content = parseInclude(entryPoint);
-  // write the parsed/replaced content into a single file
-  fs.writeFileSync("./app/assets/javascript/bundle/mobifycloud.js", content);
-
-  /**
-   *  Replaces all @include("file") declarations with file content
-   *
-   * @param {String} file src
-   * @returns {String} File content with "includes" content
-   */
-  function parseInclude(src) {
-    var content = fs.readFileSync(src, "utf8");
-    // verify all include declarations and replace with file content
-    while((searchResult = searchRegex.exec(content))) {
-      content = content.replace(';', '');
-      var includeDeclaration = searchResult[0];
-      // get included file path
-      var includePath = getPath(includeDeclaration);
-      // parse include declaration content
-      var includeContent = parseInclude(includePath);
-      // replace include with file content
-      content = content.replace(includeDeclaration, includeContent);
-    }
-    return content;
-  }
-
-  /**
-   * Retrive the include declaration file path
-   *
-   * @param {String} include declaration like @include("test.js")
-   * @returns {String} path
-   */
-  function getPath(include) {
-    return srcDir + include.replace(/include\(\"|\"\)/g, "");
-  }
-
-  function insertFileInfo(src, content) {
-    var prefix = "/* >> " + src + " START */",
-        sufix = "/* << " + src + " END */";
-    //
-    return  prefix + "\n" + content + "\n" + sufix;
-  }
-  console.log("JS assets compiled into -> app/assets/javascript/mobifycloud.js");
-}
 
 app.use(sassMiddleware({
   /* Options */
@@ -95,7 +37,7 @@ app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   // intercept OPTIONS method
-  if( 'OPTIONS' == req.method ) {
+  if ('OPTIONS' === req.method) {
     res.sendStatus(200);
   }
 
@@ -103,34 +45,34 @@ app.use(function(req, res, next) {
   hostOrigin = req.headers['host'];
 
   /* Verify if Development */
-  if ( hostOrigin.match(/mlocal/g) ) { //mlocal.konsole.studio
+  if (hostOrigin.match(/mlocal/g)) { //mlocal.konsole.studio
     environment = 'development';
     hostVar = 'mlocal.';
     hostOrigin = hostOrigin.replace(/\mlocal\./g, ''); //konsole.studio
   }
   /* Verify if Heroku*/
-  else if( hostOrigin.match(/herokuapp/g) ) { //appft-konsole-studio.herokuapp.com
+  else if (hostOrigin.match(/herokuapp/g)) { //appft-konsole-studio.herokuapp.com
     environment = 'heroku';
     hostVar = 'appft-';
     hostOrigin = hostOrigin.replace(/\.herokuapp\.com/gi, '') //appft-konsole-studio
-                           .replace(/appft\-stage\-/gi, '') //konsole-studio
-                           .replace(/appft\-/gi, '')
-                           .replace(/\-/gi, '.'); //konsole.studio
+      .replace(/appft\-stage\-/gi, '') //konsole-studio
+      .replace(/appft\-/gi, '')
+      .replace(/\-/gi, '.'); //konsole.studio
   }
   /* Verify if Digital Ocean */
-  else if( hostOrigin.match(/first\-touch/g) ) { //pampaburger.com.br.first-touch.site
+  else if (hostOrigin.match(/first\-touch/g)) { //pampaburger.com.br.first-touch.site
     environment = 'digital-ocean';
     hostVar = 'm.';
     hostOrigin = hostOrigin.replace(/\.first\-touch\.site/gi, '') //pampaburger.com.br
   }
   /* Verify if Stage */
-  else if ( hostOrigin.match(/mstage\./g) ) { //mstage.konsole.studio
+  else if (hostOrigin.match(/mstage\./g)) { //mstage.konsole.studio
     environment = 'stage';
     hostVar = 'mstage.';
     hostOrigin = hostOrigin.replace(/\mstage\./g, ''); //konsole.studio
   }
   /* Verify if Production */
-  else if ( hostOrigin.match(/(m\.|mobile\.)/g) ) { //m.konsole.studio / mobile.konsole.studio
+  else if (hostOrigin.match(/(m\.|mobile\.)/g)) { //m.konsole.studio / mobile.konsole.studio
     environment = 'production';
     if ( hostOrigin.match(/m\./g) ) {
       hostVar = 'm.';
@@ -140,12 +82,12 @@ app.use(function(req, res, next) {
     hostOrigin = hostOrigin.replace(/(\m\.|mobile\.)/g, ''); //konsole.studio
   }
 
-  for( var i=0; i < routesEndpoint.length; i++ ) {
-    var hostOriginRegExp = new RegExp('^' + hostOrigin, 'gi');
-    var currentEndpoint = routesEndpoint[i];
+  for (let i = 0; i < routesEndpoint.length; i++) {
+    let hostOriginRegExp = new RegExp('^' + hostOrigin, 'gi');
+    let currentEndpoint = routesEndpoint[i];
     // console.log('CURRENT HOST ORIGIN: ' + hostOrigin);
     // console.log('CURRENT MATCHING ENDPOINT:' + currentEndpoint);
-    if( currentEndpoint.match(hostOriginRegExp) ) { // konsole.studio == konsole.studio
+    if (currentEndpoint.match(hostOriginRegExp)) { // konsole.studio == konsole.studio
       //console.log('[Proxy] Incoming path: ' + currentEndpoint);
       proxyInstance = proxy(currentEndpoint, proxyOptions);
       proxyInstance(req, res, next);
@@ -154,7 +96,6 @@ app.use(function(req, res, next) {
 });
 
 proxyOptions = {
-
   preIntercept: function(res) {
     // If we must preIntercept something
     //console.log(res.fetchedUrls);
@@ -168,16 +109,16 @@ proxyOptions = {
   },
 
   intercept: function(rsp, data, req, res, callback) {
-    var contentType = res._headers['content-type'];
-    var mappingUrl = req.originalUrl;
+    let contentType = res._headers['content-type'];
+    let mappingUrl = req.originalUrl;
 
     // hostPath = req.headers['referer'];
     // console.log('loganderson ' + hostPath)
 
-    if ( contentType ) {
-      if( contentType.match(/html/g) ) {
+    if (contentType) {
+      if (contentType.match(/html/g)) {
 
-        if( typeof req.headers['referer'] == 'string' ) {
+        if (typeof req.headers['referer'] == 'string') {
           hostPath = req.headers['referer'];
           //console.log('Host REFER: ', hostPath);
         } else {
@@ -193,15 +134,15 @@ proxyOptions = {
         data = data.toString('utf8');
 
         /* Load Html into Cheerio to be our manageable DOM */
-        $ = cheerio.load(data, {decodeEntities: false});
+        $ = cheerio.load(data, { decodeEntities: false });
 
         /* Verify Redirect from Casa da Construção and manually rewrite it */
-        if( data.match(/window\.location\.assign\(\"guaiba\/index\.php\"\)/gi) ) {
+        if (data.match(/window\.location\.assign\(\"guaiba\/index\.php\"\)/gi)) {
           data = data.replace(/\index\.php/gi, 'index.php?id_loja=4');
         }
 
         /* Verify if contains <html> */
-        if( data.match(/\<html/gi) ) {
+        if (data.match(/\<html/gi)) {
           // Start App core module
           require('./app/main.js')(callback, data, mappingUrl, contentType, environment);
         } else {
@@ -214,13 +155,11 @@ proxyOptions = {
   }
 }
 
-var httpServer = http.createServer(app);
-//var httpsServer = https.createServer(credentials, app);
-
-var httpPort = process.env.PORT || 80;
+let httpServer = http.createServer(app);
+let httpPort = process.env.PORT || 80;
 httpServer.listen(httpPort, function() {
   generateSpriteSheet();
   hostUtils.updateHostFile();
-  compileJS();
+  jsCompiler();
   console.log('Access your project on: ' + routeHost);
 });
