@@ -1,4 +1,8 @@
-module.exports = function(callback, data, mappingUrl, contentType, environment) {
+const perfectProxy = require('./scripts/perfectProxy.js');
+const keepJS = require('./scripts/keepJS.js');
+const coreFunctions = require('./scripts/coreFunctions.js')
+
+function mobify(callback, data, mappingUrl, contentType, environment) {
 
   /* Global DOM variables */
   html = $('html');
@@ -6,27 +10,27 @@ module.exports = function(callback, data, mappingUrl, contentType, environment) 
   head = $('head');
 
   /* Import perfect proxy checker */
-  var isPerfectProxy = require('./scripts/perfect_proxy.js')(mappingUrl) || false;
+  const isPerfectProxy = perfectProxy(mappingUrl) || false;
 
-  if ( !isPerfectProxy ) {
+  if (!isPerfectProxy) {
 
     /* Remove or keep script files */
-    require('./scripts/keep_js.js')();
+    keepJS();
 
     /* Import core/custom functions */
-    require('./scripts/core_functions.js');
+    // require('./scripts/core_functions.js');
     require('./scripts/custom_functions.js');
 
     /* Core functions execution */
-    removeAllStyles();
-    removeJS();
-    removeHtmlComments();
-    setBodyEnvironment(environment);
-    rewriteLinks();
-    mobileMetaTag();
-    insertVendorScripts();
-    insertMainJS();
-    insertMainStyle();
+    coreFunctions.removeAllStyles();
+    coreFunctions.removeJS();
+    coreFunctions.removeHtmlComments();
+    coreFunctions.setBodyEnvironment(environment);
+    coreFunctions.rewriteLinks();
+    coreFunctions.mobileMetaTag();
+    coreFunctions.insertVendorScripts();
+    coreFunctions.insertMainJS();
+    coreFunctions.insertMainStyle();
 
     /* Custom functions execution */
     includeFacebookAPI();
@@ -55,3 +59,5 @@ module.exports = function(callback, data, mappingUrl, contentType, environment) 
     callback(null, finalHtml);
   }
 };
+
+module.exports = mobify;

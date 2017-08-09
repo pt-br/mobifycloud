@@ -1,5 +1,6 @@
 const cheerio = require('cheerio');
 const proxy = require('express-http-proxy');
+const mobify = require('../app/main.js');
 
 const proxyOptions = {
   preIntercept: res => {
@@ -49,7 +50,7 @@ const proxyOptions = {
         /* Verify if contains <html> */
         if (data.match(/\<html/gi)) {
           // Start App core module
-          require('../app/main.js')(callback, data, mappingUrl, contentType, environment);
+          mobify(callback, data, mappingUrl, contentType, environment);
         } else {
           callback(null, data);
         }

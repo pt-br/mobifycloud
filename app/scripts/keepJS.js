@@ -1,4 +1,4 @@
-module.exports = function() {
+function keepJS() {
 
   var keepList = {
     head: [
@@ -68,3 +68,5 @@ module.exports = function() {
   console.log(notKept);
   console.log(' ');
 };
+
+module.exports = keepJS;
