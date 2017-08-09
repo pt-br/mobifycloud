@@ -6,7 +6,8 @@ function router(pageTypes, mappingUrl, mode) {
         // import all files associated with this pageInfo mapping
         const filepath = pageTypes[i].appFile[0];
         console.log(`[Router] -->  Importing page file: ${filepath}`);
-        require(filepath)();
+        const page = require(filepath);
+        page.init();
       } else {
         /* No mapping found */
       }

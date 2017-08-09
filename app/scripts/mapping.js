@@ -19,7 +19,12 @@ function mapping(mappingUrl) {
       type: "404",
       url: /menu/g,
       appFile: ["./pages/browse/menu.js"]
-    }
+    },
+    {
+      type: "checkout",
+      url: /checkout/g,
+      appFile: ["./pages/checkout/checkout.js"]
+    },
   );
 
   /* Router will import a file according to mapping */

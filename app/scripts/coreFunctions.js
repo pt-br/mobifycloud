@@ -64,7 +64,7 @@ const coreFunctions = {
 
   insertVendorScripts: () => {
     /* TODO: Optimize this, read all files from /vendor folder */
-    head.append('<script src="//' + hostPath + '/vendor/jquery-3.2.1.min.js"></script>');
+    head.append('<script src="//' + hostPath + '/vendor/jquery-2.1.3.min.js"></script>');
     head.append('<script src="//' + hostPath + '/vendor/jquery.DOMNodeAppear.js"></script>');
     head.append('<script src="//' + hostPath + '/vendor/uranium.min.js"></script>');
   },
