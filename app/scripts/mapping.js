@@ -1,7 +1,7 @@
 const router = require('./router');
 
 function mapping(mappingUrl) {
-  pageTypes = [];
+  const pageTypes = [];
 
  /* Map URLs here */
   pageTypes.push(
