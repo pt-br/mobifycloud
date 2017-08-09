@@ -33,8 +33,8 @@ app.use(express.static(path.join(__dirname, '/app/assets/stylesheets/css')));
 
 trafficManager.proxify(app, routesEndpoint);
 
-let httpServer = http.createServer(app);
-let httpPort = process.env.PORT || 80;
+const httpServer = http.createServer(app);
+const httpPort = process.env.PORT || 80;
 httpServer.listen(httpPort, function() {
   generateSpriteSheet();
   hostUtils.updateHostFile();
