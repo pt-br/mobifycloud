@@ -119,17 +119,13 @@ const trafficManager = {
         hostOrigin = hostOrigin.replace(/(\m\.|mobile\.)/g, ''); //konsole.studio
       }
 
-      for (let i = 0; i < siteDomains.length; i++) {
-        let hostOriginRegExp = new RegExp('^' + hostOrigin, 'gi');
-        let currentEndpoint = siteDomains[i];
-        // console.log('CURRENT HOST ORIGIN: ' + hostOrigin);
-        // console.log('CURRENT MATCHING ENDPOINT:' + currentEndpoint);
-        if (currentEndpoint.match(hostOriginRegExp)) { // konsole.studio == konsole.studio
-          //console.log('[Proxy] Incoming path: ' + currentEndpoint);
-          proxyInstance = proxy(currentEndpoint, proxyOptions);
+      siteDomains.map(domain => {
+        const hostOriginRegex = new RegExp(`^${hostOrigin}`, 'gi');
+        if (domain.match(hostOriginRegex)) { // konsole.studio == konsole.studio
+          proxyInstance = proxy(domain, proxyOptions);
           proxyInstance(req, res, next);
         }
-      }
+      });
     });
   },
 }
