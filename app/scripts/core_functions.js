@@ -23,7 +23,7 @@ insertVendorScripts = function() {
 }
 
 insertMainJS = function() {
-  head.append('<script src="//' + hostPath + '/scripts/mobileon.js"></script>');
+  head.append('<script src="//' + hostPath + '/scripts/mobifycloud.js"></script>');
 }
 
 insertMainStyle = function() {

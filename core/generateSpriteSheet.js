@@ -8,12 +8,13 @@ function generateSpriteSheet() {
   const spriteBackgroundLocation = '/sprites/';
   let spriteSheetContent = '';
   let spriteSheetMessage = '';
-  const classTemplate = '.$CLASS_NAME {\n' +
-                     '  background: url(\'' + spriteBackgroundLocation + '$IMAGE_NAME\') no-repeat;\n' +
-                     '  width: $IMAGE_WIDTHpx;\n' +
-                     '  height: $IMAGE_HEIGHTpx;\n' +
-                     '  display: inline-block;\n' +
-                     '}\n';
+  const classTemplate = `
+.$CLASS_NAME {
+  background: url('${spriteBackgroundLocation} $IMAGE_NAME') no-repeat;
+  width: $IMAGE_WIDTHpx;
+  height: $IMAGE_HEIGHTpx;
+  display: inline-block;
+}`;
 
   let spriteFiles = fs.readdirSync(spritesLocation);
   for (let i = 0; i < spriteFiles.length; i++) {
@@ -23,15 +24,15 @@ function generateSpriteSheet() {
     const spriteWidth = dimensions.width;
     const spriteHeigth = dimensions.height;
     spriteSheetMessage = '/* This file is auto generated. Your changes do not have any effect. */\n';
-    let newSpriteClass = classTemplate.replace(/\$CLASS_NAME/g, 'sprite-' + spriteName)
-                                      .replace(/\$IMAGE_NAME/g, spriteFile)
-                                      .replace(/\$IMAGE_WIDTH/g, spriteWidth)
-                                      .replace(/\$IMAGE_HEIGHT/g, spriteHeigth);
+    let newSpriteClass = classTemplate.replace(/\$CLASS_NAME/g, `sprite-${spriteName}`)
+      .replace(/\$IMAGE_NAME/g, spriteFile)
+      .replace(/\$IMAGE_WIDTH/g, spriteWidth)
+      .replace(/\$IMAGE_HEIGHT/g, spriteHeigth);
 
-    spriteSheetContent = spriteSheetContent + newSpriteClass;
+    spriteSheetContent = `${spriteSheetContent} ${newSpriteClass}`;
   }
 
-  spriteSheetContent = spriteSheetMessage + spriteSheetContent;
+  spriteSheetContent = `${spriteSheetMessage} ${spriteSheetContent}`;
 
   /* Export sprites.scss file */
   fs.writeFileSync(spritesheetFile, spriteSheetContent);

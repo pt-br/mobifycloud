@@ -7,10 +7,10 @@ const fs = require('fs');
   */
 
 // Project src
-let srcDir = './app/assets/javascript/'
-let entryPoint = srcDir + 'main.js';
+const srcDir = './app/assets/javascript/'
+const entryPoint = srcDir + 'main.js';
 // regex to serach @include('file'); declarations
-let searchRegex = /include\(\'[^\)]*\'\)/;
+const searchRegex = /include\((\'|\")[^\)]*(\'|\")\)/;
 
 function jsCompiler() {
   // Parse entry point
@@ -49,7 +49,7 @@ function parseInclude(src) {
  * @returns {String} path
  */
 function getPath(include) {
-  return srcDir + include.replace(/include\(\'|\'\)/g, '');
+  return srcDir + include.replace(/include\((\'|\")|(\'|\")\)/g, '');
 }
 
 function insertFileInfo(src, content) {
