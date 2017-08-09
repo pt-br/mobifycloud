@@ -1,4 +1,4 @@
-module.exports = function(pageTypes, mappingUrl, mode) {
+function router(pageTypes, mappingUrl, mode) {
   if (mode === 'mapping') {
     for (let i = 0; i < pageTypes.length; i++) {
       const url = pageTypes[i].url;
@@ -23,3 +23,5 @@ module.exports = function(pageTypes, mappingUrl, mode) {
     }
   }
 };
+
+module.exports = router;

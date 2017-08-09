@@ -1,4 +1,4 @@
-module.exports = () => {
+function keepJS() {
   var keepList = {
     head: [
     ],
@@ -63,7 +63,9 @@ module.exports = () => {
   console.log('= = = = > Kept',kept.head.length+kept.body.length,'scripts');
   console.log(kept);
   console.log(' ');
-  // console.log('X X X > Removed',notKept.head.length+notKept.body.length,'scripts');
-  // console.log(notKept);
-  // console.log(' ');
+  console.log('X X X > Removed',notKept.head.length+notKept.body.length,'scripts');
+  console.log(notKept);
+  console.log(' ');
 };
+
+module.exports = keepJS;

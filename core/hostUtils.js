@@ -41,22 +41,26 @@ const hostUtils = {
       });
     });
   },
+
   getRoutes: () => {
     let urlRoutesLength = JSON.stringify(url_map.route.length);
     for (let i = 0; i < urlRoutesLength; i++) {
       routes.push(JSON.stringify(url_map.route[i]));
     }
   },
+
   cleanupHosts: () => {
     console.log('Restoring original /etc/hosts file...');
     fs.writeFileSync('/etc/hosts', originalHosts);
   },
+
   getRoutesEndpoint: () => {
     for (let i = 0; i < routes.length; i++) {
       routesEndpoint.push(routes[i].split('=> ')[1].replace('\"', ''));
       return routesEndpoint;
     }
   },
+
   getRoutesHost: () => {
     for (let i = 0; i < routes.length; i++) {
       routesHost.push(routes[i].split('=> ')[0].replace('\"', ''));

@@ -1,6 +1,6 @@
 const router = require('./router');
 
-module.exports = mappingUrl => {
+function perfectProxy(mappingUrl) {
   const pageTypes = [];
 
  /* Perfect proxy URLs here */
@@ -15,3 +15,5 @@ module.exports = mappingUrl => {
   const isPerfectProxy = router(pageTypes, mappingUrl, 'perfect_proxy');
   return isPerfectProxy;
 };
+
+module.exports = perfectProxy;

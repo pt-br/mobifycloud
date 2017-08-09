@@ -16,7 +16,4 @@ const customFunctions = {
   },
 }
 
-
-
-
 module.exports = customFunctions;

@@ -1,10 +1,10 @@
-module.exports = footer = {
+const footer = {
   init: () => {
     constructor();
   },
 };
 
-const constructor = () => {
+constructor = () => {
   const footerContainer = body.find('#footer');
   const footerContent = footerContainer.find('#footer-menu');
 
@@ -14,3 +14,5 @@ const constructor = () => {
   const desktopHost = footerContent.find('div');
   desktopHost.remove();
 }
+
+module.exports = footer;

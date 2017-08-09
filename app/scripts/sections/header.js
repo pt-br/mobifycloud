@@ -1,4 +1,4 @@
-module.exports = header = {
+const header = {
   init: () => {
     constructor();
     initSearch();
@@ -104,3 +104,5 @@ const initCarousel = () => {
   carouselItem.addClass('mo-header-carousel-item');
   carouselItem.attr('data-ur-carousel-component', 'item');
 }
+
+module.exports = header;

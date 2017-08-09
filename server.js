@@ -7,10 +7,12 @@ const path = require('path');
 
 const jsCompiler = require('./jsCompiler');
 const hostUtils = require('./core/hostUtils');
-const hostCleaner = require('./core/hostCleaner').clean(hostUtils.cleanupHosts);
+const hostCleaner = require('./core/hostCleaner');
 const generateSpriteSheet = require('./core/generateSpriteSheet');
 const trafficManager = require('./core/trafficManager');
 
+/* Hosts section */
+hostCleaner(hostUtils.cleanupHosts); // Watch for server changes and hosts restoring
 hostUtils.getRoutes();
 const routesEndpoint = hostUtils.getRoutesEndpoint();
 const routeHost = hostUtils.getRoutesHost();
