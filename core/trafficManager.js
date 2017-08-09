@@ -2,19 +2,19 @@ const cheerio = require('cheerio');
 const proxy = require('express-http-proxy');
 
 const proxyOptions = {
-  preIntercept: function(res) {
+  preIntercept: res => {
     // If we must preIntercept something
     //console.log(res.fetchedUrls);
   },
 
-  decorateRequest: function(req) {
+  decorateRequest: req => {
     req.headers[ 'Accept-Encoding' ] = 'utf8';
     delete req.headers['if-modified-since'];
     delete req.headers['if-none-match'];
     return req;
   },
 
-  intercept: function(rsp, data, req, res, callback) {
+  intercept: (rsp, data, req, res, callback) => {
     let contentType = res._headers['content-type'];
     let mappingUrl = req.originalUrl;
 
@@ -23,7 +23,7 @@ const proxyOptions = {
 
     if (contentType) {
       if (contentType.match(/html/g)) {
-        if (typeof req.headers['referer'] == 'string') {
+        if (typeof req.headers['referer'] === 'string') {
           hostPath = req.headers['referer'];
           //console.log('Host REFER: ', hostPath);
         } else {
@@ -61,8 +61,8 @@ const proxyOptions = {
 }
 
 const trafficManager = {
-  proxify: function(app, routesEndpoint) {
-    app.use(function(req, res, next) {
+  proxify: (app, routesEndpoint) => {
+    app.use((req, res, next) => {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
       // intercept OPTIONS method

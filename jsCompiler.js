@@ -7,8 +7,8 @@ const fs = require('fs');
   */
 
 // Project src
-const srcDir = './app/assets/javascript/'
-const entryPoint = srcDir + 'main.js';
+const srcDir = './app/assets/javascript'
+const entryPoint = `${srcDir}/main.js`;
 // regex to serach @include('file'); declarations
 const searchRegex = /include\((\'|\")[^\)]*(\'|\")\)/;
 
@@ -49,12 +49,12 @@ function parseInclude(src) {
  * @returns {String} path
  */
 function getPath(include) {
-  return srcDir + include.replace(/include\((\'|\")|(\'|\")\)/g, '');
+  return `${srcDir}/${include.replace(/include\((\'|\")|(\'|\")\)/g, '')}`;
 }
 
 function insertFileInfo(src, content) {
-  let prefix = '/* >> ' + src + ' START */',
-      sufix = '/* << ' + src + ' END */';
+  let prefix = `/* >> ${src} START */`,
+      sufix = `/* << ${src} END */`;
   return  prefix + '\n' + content + '\n' + sufix;
 }
 
