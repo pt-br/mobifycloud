@@ -1,6 +1,6 @@
 function noOp() {};
 
-exports.Cleanup = function Cleanup(callback) {
+exports.clean = function hostCleaner(callback) {
 
   // attach user callback to the process event emitter
   // if no callback, it will still exit gracefully on Ctrl-C

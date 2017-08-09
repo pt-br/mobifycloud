@@ -1,2 +1,2 @@
-/* All scripts here will be compiled into first-touch.js */
+/* All scripts here will be compiled into mobifycloud.js */
 include("scripts/header.js");

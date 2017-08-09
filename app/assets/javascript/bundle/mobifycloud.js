@@ -1,4 +1,4 @@
-/* All scripts here will be compiled into first-touch.js */
+/* All scripts here will be compiled into mobifycloud.js */
 jQuery(document).ready(function() {
   /* Variable declarations */
   var menuButton = jQuery('.mo-menu-button');

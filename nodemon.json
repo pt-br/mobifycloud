@@ -1,4 +1,4 @@
 {
   "verbose": false,
-  "ignore": ["/app/assets/javascript/bundle/mobileon.js"]
+  "ignore": ["/app/assets/javascript/bundle/mobifycloud.js"]
 }

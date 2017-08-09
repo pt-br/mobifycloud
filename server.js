@@ -1,93 +1,21 @@
-var express = require('express');
-var app = express();
-cheerio = require('cheerio');
+const express = require('express');
+const app = express();
+const cheerio = require('cheerio');
+const sassMiddleware = require('node-sass-middleware');
+const http = require('follow-redirects').http;
+const https = require('follow-redirects').https;
+const proxy = require('express-http-proxy');
 
-var sassMiddleware = require('node-sass-middleware');
-var sizeOf = require('image-size');
+const fs = require('fs');
+const path = require('path');
 
-var http = require('follow-redirects').http;
-var https = require('follow-redirects').https;
+const generateSpriteSheet = require('./core/generateSpriteSheet');
+const hostUtils = require('./core/hostUtils');
+const hostCleaner = require('./core/hostCleaner').clean(hostUtils.cleanupHosts);
 
-proxy = require('express-http-proxy');
-
-var domain = require('domain');
-var d = domain.create();
-
-fs = require('fs');
-var path = require('path');
-
-var cleanup = require('./cleanup').Cleanup(cleanupHosts);
-var url_map = require('./url_map.json');
-
-d.on('error', function(err) {
-  console.error(err);
-});
-
-/* Site Route */
-var routes = [];
-var routesEndpoint = [];
-var routesHost = [];
-
-var originalHosts = '';
-
-hostOrigin = '';
-hostPath = '';
-hostVar = '';
-environment = '';
-
-getRoutes();
-getRoutesEndpoint();
-getRoutesHost();
-
-/* Site routes */
-function getRoutes() {
-  var urlRoutesLength = JSON.stringify(url_map.route.length);
-  for( var i = 0; i < urlRoutesLength; i++ ) {
-    routes.push(JSON.stringify(url_map.route[i]));
-  }
-}
-
-function getRoutesEndpoint() {
-  //routeEndpoint = routes[0].split('=> ')[1].replace('\"', '');
-  for( var i = 0; i < routes.length; i++ ) {
-    routesEndpoint.push(routes[i].split('=> ')[1].replace('\"', ''));
-  }
-}
-
-function getRoutesHost() {
-  //routeHost = routes[0].split('=> ')[0].replace('\"', '');
-  for( var i = 0; i < routes.length; i++ ) {
-    routesHost.push(routes[i].split('=> ')[0].replace('\"', ''));
-  }
-}
-
-function updateHostFile() {
-  fs.readFile('/etc/hosts', 'utf8', function (err, hostsContent) {
-    if (err) {
-      return console.log(err);
-    }
-
-    originalHosts = hostsContent;
-
-    newHostsContent = hostsContent + '\n# MobifyCloud Development Hosts:';
-    //newHostsContent = newHostsContent + '\n' + '127.0.0.1' + '\t' + routeHost;
-    for( var i = 0; i < routesHost.length; i++ ) {
-      newHostsContent = newHostsContent + '\n' + '127.0.0.1' + '\t' + routesHost[i];
-    }
-
-    /* Verify if writeFile is successful to avoid Heroku issues */
-    d.run(function() {
-      fs.writeFile('/etc/hosts', newHostsContent, function (err) {
-        if (err) throw err;
-      });
-    });
-  });
-}
-
-function cleanupHosts() {
-  console.log('Restoring original /etc/hosts file...');
-    fs.writeFileSync('/etc/hosts', originalHosts);
-};
+hostUtils.getRoutes();
+const routesEndpoint = hostUtils.getRoutesEndpoint();
+const routeHost = hostUtils.getRoutesHost();
 
  /**
   * Thanks to @williammustaffa for this compiler.
@@ -103,7 +31,7 @@ function compileJS() {
   // Parse entry point
   var content = parseInclude(entryPoint);
   // write the parsed/replaced content into a single file
-  fs.writeFileSync("./app/assets/javascript/bundle/monifycloud.js", content);
+  fs.writeFileSync("./app/assets/javascript/bundle/mobifycloud.js", content);
 
   /**
    *  Replaces all @include("file") declarations with file content
@@ -144,40 +72,6 @@ function compileJS() {
     return  prefix + "\n" + content + "\n" + sufix;
   }
   console.log("JS assets compiled into -> app/assets/javascript/mobifycloud.js");
-}
-
-function generateSpriteSheet() {
-  var spritesLocation = path.join(__dirname, './app/assets/images/sprites/');
-  var spritesheetFile = path.join(__dirname, './app/assets/stylesheets/sprites/sprites.scss');
-  var spriteBackgroundLocation = '/sprites/';
-  var spriteSheetContent = '';
-  var classTemplate = '.$CLASS_NAME {\n' +
-                     '  background: url(\'' + spriteBackgroundLocation + '$IMAGE_NAME\') no-repeat;\n' +
-                     '  width: $IMAGE_WIDTHpx;\n' +
-                     '  height: $IMAGE_HEIGHTpx;\n' +
-                     '  display: inline-block;\n' +
-                     '}\n';
-
-  var spriteFiles = fs.readdirSync(spritesLocation);
-  for( var i=0; i < spriteFiles.length; i++ ) {
-    var spriteFile = spriteFiles[i];
-    var spriteName = spriteFile.replace(/\..*/gi, '');
-    var dimensions = sizeOf(spritesLocation + spriteFile);
-    spriteWidth = dimensions.width;
-    spriteHeigth = dimensions.height;
-    var spriteSheetMessage = '/* This file is auto generated. Your changes do not have any effect. */\n';
-    var newSpriteClass = classTemplate.replace(/\$CLASS_NAME/g, 'sprite-' + spriteName)
-                                      .replace(/\$IMAGE_NAME/g, spriteFile)
-                                      .replace(/\$IMAGE_WIDTH/g, spriteWidth)
-                                      .replace(/\$IMAGE_HEIGHT/g, spriteHeigth);
-
-    spriteSheetContent = spriteSheetContent + newSpriteClass;
-  }
-
-  spriteSheetContent = spriteSheetMessage + spriteSheetContent;
-
-  /* Export sprites.scss file */
-  fs.writeFileSync(spritesheetFile, spriteSheetContent);
 }
 
 app.use(sassMiddleware({
@@ -326,7 +220,7 @@ var httpServer = http.createServer(app);
 var httpPort = process.env.PORT || 80;
 httpServer.listen(httpPort, function() {
   generateSpriteSheet();
-  updateHostFile();
+  hostUtils.updateHostFile();
   compileJS();
-  console.log('Access your project on: ' + routesHost[0]);
+  console.log('Access your project on: ' + routeHost);
 });
