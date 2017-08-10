@@ -10,7 +10,7 @@ function generateSpriteSheet() {
   let spriteSheetMessage = '';
   const classTemplate = `
 .$CLASS_NAME {
-  background: url('${spriteBackgroundLocation} $IMAGE_NAME') no-repeat;
+  background: url('${spriteBackgroundLocation}$IMAGE_NAME') no-repeat;
   width: $IMAGE_WIDTHpx;
   height: $IMAGE_HEIGHTpx;
   display: inline-block;
