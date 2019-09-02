@@ -16,7 +16,7 @@
     "follow-redirects": "^0.2.0",
     "htmlparser2": "^3.9.1",
     "image-size": "^0.5.0",
-    "lodash": "^2.0.0",
+    "lodash": "^4.17.13",
     "node-sass-middleware": "^0.9.8",
     "nodemon": "^1.11.0"
   },
